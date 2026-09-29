@@ -1,6 +1,6 @@
 # Networking and static addresses
 
-The installer derives the primary interface from the first IPv4 default route and records its global address/prefix, gateway, resolver list, and link type. It then detects the active manager in this order: a connected NetworkManager device, netplan, active systemd-networkd, then ifupdown.
+The installer derives the primary interface from the first IPv4 default route and records its global address/prefix, gateway, resolver list, and link type. It then detects the active manager in this order: a connected NetworkManager device, netplan, active systemd-networkd, then ifupdown. Fedora normally follows the NetworkManager path; Arch must already have NetworkManager, systemd-networkd, or another detected supported backend configured.
 
 ## Safety controls
 

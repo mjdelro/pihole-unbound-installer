@@ -1,6 +1,6 @@
 # Pi-hole + Unbound installer
 
-An interactive, defensive installer for a DNS-only Pi-hole v6 deployment backed by a true recursive Unbound resolver. It installs Docker Engine from Docker's official apt repository, makes the host address static using the existing network manager, starts and verifies the DNS stack, and can optionally install a systemd-based updater.
+Interactive, defensive installers for a DNS-only Pi-hole v6 deployment backed by a true recursive Unbound resolver. Each distribution family has its own auditable shell script for package management and Docker installation. The installer makes the host address static using the existing network manager, starts and verifies the DNS stack, and can optionally install a systemd-based updater.
 
 > This script changes host networking. Run it from a console when possible. If it detects SSH, it displays an additional warning and arms a three-minute automatic rollback before applying the change.
 
@@ -27,17 +27,37 @@ Unbound does not forward to Cloudflare, Google, the router, or Pi-hole. Its port
 
 - Debian 11, 12, and 13
 - Ubuntu 22.04 and 24.04
+- Fedora 43 and 44 (the releases currently maintained by Docker's RPM repository)
+- Arch Linux (rolling release; Arch itself, not untested derivatives)
 
-The script reads `/etc/os-release` and stops on other releases. Supported network backends are NetworkManager, netplan, systemd-networkd, and ifupdown. An existing ifupdown interface stanza is not automatically rewritten because doing so safely requires site-specific knowledge.
+Every script reads `/etc/os-release` and stops on other distributions rather than guessing. Supported network backends are NetworkManager, netplan, systemd-networkd, and ifupdown when present. Fedora normally uses NetworkManager; Arch installations must use one of the detected supported managers. An existing ifupdown interface stanza is not automatically rewritten because doing so safely requires site-specific knowledge.
 
 ## Install
 
-Download or clone this repository, review the script, then run:
+Clone or download the complete repository, review the scripts, then use the dispatcher:
 
 ```bash
 chmod +x install-pihole-unbound.sh
 sudo ./install-pihole-unbound.sh
 ```
+
+The dispatcher selects one of these explicit installers through `/etc/os-release`:
+
+```bash
+sudo ./install-pihole-unbound-debian-ubuntu.sh
+sudo ./install-pihole-unbound-fedora.sh
+sudo ./install-pihole-unbound-arch.sh
+```
+
+Do not download only the dispatcher; it deliberately executes the adjacent platform-specific file.
+
+Docker packages come from:
+
+- Docker's official apt repository on Debian and Ubuntu.
+- Docker's official RPM repository on maintained Fedora releases.
+- Arch's official repositories (`docker`, `docker-compose`, and `docker-buildx`) on Arch Linux. Docker does not provide an Arch-specific package repository.
+
+Arch does not support partial upgrades. Its installer asks for confirmation, then runs a synchronized `pacman -Syu` while installing prerequisites.
 
 The installer shows the detected interface, address/prefix, gateway, current DNS servers, link type, and network backend before asking for a static address. The current address is offered as the default. Reserve the selected address in the router's DHCP configuration or choose an address outside its DHCP pool.
 
@@ -142,7 +162,10 @@ The valid DNSSEC domain must return `NOERROR`; the deliberately broken domain mu
 
 ## Repository layout
 
-- `install-pihole-unbound.sh` — production installer and file generator
+- `install-pihole-unbound.sh` — compatibility OS dispatcher
+- `install-pihole-unbound-debian-ubuntu.sh` — Debian/Ubuntu installer
+- `install-pihole-unbound-fedora.sh` — Fedora installer
+- `install-pihole-unbound-arch.sh` — Arch Linux installer
 - `examples/` — illustrative generated configuration (do not copy manually)
 - `docs/` — network, router, updater, and troubleshooting guides
 
@@ -155,3 +178,6 @@ MIT. See [LICENSE](LICENSE).
 - [Official Pi-hole Docker image and stable tags](https://github.com/pi-hole/docker-pi-hole)
 - [Pi-hole v6 Docker configuration](https://docs.pi-hole.net/docker/configuration/)
 - [Docker Engine installation for Debian](https://docs.docker.com/engine/install/debian/)
+- [Docker Engine installation for Fedora](https://docs.docker.com/engine/install/fedora/)
+- [ArchWiki Docker guidance](https://wiki.archlinux.org/title/Docker)
+- [Arch Linux Docker Buildx package](https://archlinux.org/packages/extra/x86_64/docker-buildx/)
