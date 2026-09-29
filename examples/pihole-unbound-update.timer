@@ -1,0 +1,11 @@
+[Unit]
+Description=Scheduled Pi-hole and Unbound container update
+
+[Timer]
+OnCalendar=Sat *-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=pihole-unbound-update.service
+
+[Install]
+WantedBy=timers.target

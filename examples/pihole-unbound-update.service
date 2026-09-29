@@ -1,0 +1,17 @@
+[Unit]
+Description=Update and verify Pi-hole and Unbound containers
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pihole-unbound/update.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/opt/pihole-unbound /run/lock /var/lib/docker
+NoNewPrivileges=true

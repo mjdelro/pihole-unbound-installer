@@ -1,0 +1,43 @@
+# Illustrative output only. The installer generates the production file and .env.
+name: pihole-unbound
+services:
+  unbound:
+    build: ./unbound
+    image: local/pihole-unbound:bookworm
+    restart: unless-stopped
+    networks: [dns-backend]
+    volumes:
+      - ./unbound/unbound.conf:/etc/unbound/unbound.conf:ro
+      - ./unbound/root.hints:/var/lib/unbound/root.hints:ro
+    healthcheck:
+      test: ["CMD-SHELL", "dig @127.0.0.1 -p 5335 dnssec.works A +dnssec +time=3 +tries=1 | grep -q 'status: NOERROR'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  pihole:
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    depends_on:
+      unbound:
+        condition: service_healthy
+    networks: [dns-backend]
+    ports:
+      - "${SERVER_IP}:53:53/tcp"
+      - "${SERVER_IP}:53:53/udp"
+      - "${SERVER_IP}:${WEB_PORT}:80/tcp"
+    environment:
+      TZ: "${TZ}"
+      FTLCONF_dns_upstreams: "unbound#5335"
+      FTLCONF_dns_listeningMode: "ALL"
+      FTLCONF_webserver_api_password: "${WEB_PASSWORD}"
+    volumes:
+      - ./etc-pihole:/etc/pihole
+
+networks:
+  dns-backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "${DOCKER_SUBNET}"
