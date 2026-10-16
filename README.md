@@ -1,6 +1,6 @@
 # Pi-hole + Unbound installer
 
-Interactive, defensive installers for a DNS-only Pi-hole v6 deployment backed by a true recursive Unbound resolver. Each distribution family has its own auditable shell script for package management and Docker installation. The installer makes the host address static using the existing network manager, starts and verifies the DNS stack, and can optionally install a systemd-based updater.
+Interactive installers for a DNS-only Pi-hole v6 deployment backed by a recursive Unbound resolver. Each distribution family has its own shell script for package management and Docker installation. The installer makes the host address static using the existing network manager, starts and verifies the DNS stack, and can optionally install a systemd-based updater.
 
 > This script changes host networking. Run it from a console when possible. If it detects SSH, it displays an additional warning and arms a three-minute automatic rollback before applying the change.
 
@@ -77,7 +77,7 @@ The Pi-hole image uses the stable `latest` channel rather than development/night
 
 ## Router setup
 
-Set the router's **LAN DHCP DNS server** to the exact IPv4 address printed by the installer. Do not add `8.8.8.8`, `1.1.1.1`, or `9.9.9.9` as a secondary unless bypass is intentional—clients commonly use either advertised server.
+Set the router's LAN DHCP DNS server to the exact IPv4 address printed by the installer. Do not add `8.8.8.8`, `1.1.1.1`, or `9.9.9.9` as a secondary unless bypass is intentional. Clients commonly use either advertised server.
 
 If the router requires two DNS fields, use the Pi-hole address twice if accepted, leave the second field empty, or deploy a second independent Pi-hole. Some routers advertise themselves as DNS, proxy DNS, intercept port 53, or implement “DNS Director.” Those features can collapse all clients into the router in Pi-hole statistics, permit bypass, or create a loop. If the router redirects all LAN DNS to Pi-hole, exempt the Pi-hole/Unbound host itself.
 
@@ -162,12 +162,12 @@ The valid DNSSEC domain must return `NOERROR`; the deliberately broken domain mu
 
 ## Repository layout
 
-- `install-pihole-unbound.sh` — compatibility OS dispatcher
-- `install-pihole-unbound-debian-ubuntu.sh` — Debian/Ubuntu installer
-- `install-pihole-unbound-fedora.sh` — Fedora installer
-- `install-pihole-unbound-arch.sh` — Arch Linux installer
-- `examples/` — illustrative generated configuration (do not copy manually)
-- `docs/` — network, router, updater, and troubleshooting guides
+- `install-pihole-unbound.sh`: compatibility OS dispatcher
+- `install-pihole-unbound-debian-ubuntu.sh`: Debian/Ubuntu installer
+- `install-pihole-unbound-fedora.sh`: Fedora installer
+- `install-pihole-unbound-arch.sh`: Arch Linux installer
+- `examples/`: illustrative generated configuration (do not copy manually)
+- `docs/`: network, router, updater, and troubleshooting guides
 
 ## License
 
