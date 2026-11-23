@@ -346,7 +346,7 @@ EOF
 
 configure_ifupdown() {
   local dns_space=${DNS_SERVERS//,/ }
-  grep -Eq "^[[:space:]]*iface[[:space:]]+$PRIMARY_IFACE[[:space:]]+inet[[:space:]]" /etc/network/interfaces /etc/network/interfaces.d/* 2>/dev/null && \
+  grep -Eq "^[[:space:]]*iface[[:space:]]+${PRIMARY_IFACE}[[:space:]]+inet[[:space:]]" /etc/network/interfaces /etc/network/interfaces.d/* 2>/dev/null && \
     die "An existing ifupdown stanza controls $PRIMARY_IFACE. Automatic editing is unsafe; configure it statically and rerun. Backup: $BACKUP_DIR"
   install -d -m 755 /etc/network/interfaces.d
   grep -Eq '^[[:space:]]*source(-directory)?[[:space:]]+/etc/network/interfaces.d' /etc/network/interfaces || \
