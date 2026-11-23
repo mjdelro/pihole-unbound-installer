@@ -40,9 +40,9 @@ Unbound does not forward to Cloudflare, Google, the router, or Pi-hole. Its port
 
 ## Supported systems
 
-- Debian 11, 12, and 13
-- Ubuntu 22.04 and 24.04
-- Fedora 43 and 44 (the releases currently maintained by Docker's RPM repository)
+- Debian 11, 12, 13, and 14
+- Ubuntu 22.04, 24.04, and 26.04 LTS
+- Fedora 42, 43, 44, and 45 (with automatic SELinux `:Z` bind-mount relabeling when enforcing)
 - Arch Linux (rolling release; Arch itself, not untested derivatives)
 
 Every script reads `/etc/os-release` and stops on other distributions rather than guessing. Supported network backends are NetworkManager, netplan, systemd-networkd, and ifupdown when present. Fedora normally uses NetworkManager; Arch installations must use one of the detected supported managers. An existing ifupdown interface stanza is not automatically rewritten because doing so safely requires site-specific knowledge.
@@ -54,9 +54,12 @@ Clone or download the complete repository, review the scripts, then use the disp
 ```bash
 chmod +x install-pihole-unbound.sh
 sudo ./install-pihole-unbound.sh
+
+# Optional: choose a custom web UI port (default: 8080)
+sudo ./install-pihole-unbound.sh --web-port 8081
 ```
 
-The dispatcher selects one of these explicit installers through `/etc/os-release`:
+The dispatcher selects one of these explicit installers through `/etc/os-release` (each keeps package management and Docker trust setup explicit, while sharing core runtime logic from `lib/common.sh`):
 
 ```bash
 sudo ./install-pihole-unbound-debian-ubuntu.sh

@@ -1,9 +1,10 @@
 # Illustrative output only. The installer generates the production file and .env.
+# On SELinux-enforcing hosts (e.g. Fedora), the installer automatically adds :Z / :ro,Z.
 name: pihole-unbound
 services:
   unbound:
     build: ./unbound
-    image: local/pihole-unbound:bookworm
+    image: local/pihole-unbound:trixie
     restart: unless-stopped
     networks: [dns-backend]
     volumes:
@@ -15,6 +16,11 @@ services:
       timeout: 10s
       retries: 5
       start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   pihole:
     image: pihole/pihole:latest
@@ -34,6 +40,11 @@ services:
       FTLCONF_webserver_api_password: "${WEB_PASSWORD}"
     volumes:
       - ./etc-pihole:/etc/pihole
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   dns-backend:
