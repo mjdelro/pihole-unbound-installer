@@ -1,4 +1,19 @@
-# Pi-hole + Unbound installer
+<p align="center">
+  <img src="assets/icon.svg" alt="Pi-hole v6 + Unbound Installer Icon" width="104" height="104" />
+</p>
+
+<h1 align="center">Pi-hole v6 + Unbound Installer</h1>
+
+<p align="center">Production-ready interactive installers for Pi-hole v6 backed by a recursive Unbound DNS resolver.</p>
+
+<p align="center">
+  <a href="https://github.com/mjdelro/pihole-unbound-installer/releases/latest"><img src="https://img.shields.io/github/v/release/mjdelro/pihole-unbound-installer?style=flat-square&color=ef4444" alt="" /></a>
+  <img src="https://img.shields.io/badge/Pi--hole-v6%20%2B%20Unbound-96060C?style=flat-square&logo=pi-hole&logoColor=white" alt="" />
+  <img src="https://img.shields.io/badge/Debian%20%7C%20Ubuntu%20%7C%20Fedora%20%7C%20Arch-3b82f6?style=flat-square&logo=linux&logoColor=white" alt="" />
+  <img src="https://img.shields.io/github/license/mjdelro/pihole-unbound-installer?style=flat-square&color=64748b" alt="" />
+</p>
+
+---
 
 Interactive installers for a DNS-only Pi-hole v6 deployment backed by a recursive Unbound resolver. Each distribution family has its own shell script for package management and Docker installation. The installer makes the host address static using the existing network manager, starts and verifies the DNS stack, and can optionally install a systemd-based updater.
 
